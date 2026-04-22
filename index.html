@@ -19,25 +19,6 @@
 
     body { color: var(--body-color); background: #fff; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
 
-    /* ── LOADING ── */
-    .page-out {
-      position: fixed; inset: 0; z-index: 9999;
-      background: var(--primary);
-      display: flex; align-items: center; justify-content: center;
-      transition: opacity .5s ease, visibility .5s ease;
-    }
-    .page-out.hide { opacity: 0; visibility: hidden; }
-    .loading-inner { text-align: center; }
-    .loading-ring {
-      width: 50px; height: 50px;
-      border: 3px solid rgba(255,255,255,.3);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin .8s linear infinite;
-      margin: 16px auto 0;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
     /* ── NAVBAR ── */
     .navbar-default {
       background-color: #fff;
@@ -53,24 +34,44 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 16px;
       max-width: 1300px;
       margin: 0 auto;
       width: 100%;
       min-height: 5.375rem;
     }
-    .logo-navbar img { max-height: 3.5rem; }
-    .navbar-nav .nav-link { color: var(--body-color); font-size: .875rem; padding: .5rem 1rem; }
-    .navbar-nav .nav-link:hover, .navbar-nav .nav-link.active { color: var(--primary); }
-    .navbar-toggler { border: none; padding: 6px; }
-    .navbar-toggler span {
-      display: block; width: 22px; height: 2px;
-      background: var(--body-color); margin: 4px 0;
-      transition: .3s;
+    .logo-navbar { flex-shrink: 0; }
+    .logo-navbar img { max-height: 3.5rem; width: auto; display: block; }
+    .logo-navbar-text {
+      font-size: 1.1rem; font-weight: 700; color: #222;
+      text-decoration: none; letter-spacing: .03em;
     }
+    /* Nav links - center */
+    .navbar-nav-main {
+      display: flex; flex-direction: row; gap: 0;
+      list-style: none; margin: 0; padding: 0; flex: 1;
+    }
+    .navbar-nav-main .nav-link { color: var(--body-color); font-size: .875rem; padding: .5rem .85rem; white-space: nowrap; }
+    .navbar-nav-main .nav-link:hover, .navbar-nav-main .nav-link.active { color: var(--primary); }
     .mod-languages__list { list-style: none; margin: 0; padding: 0; display: flex; gap: 8px; }
     .mod-languages__list a { font-size: .8rem; color: #666; text-decoration: none; }
     .mod-languages__list .lang-active a { color: var(--primary); font-weight: 600; }
-    .nav-right-container { display: flex; align-items: center; gap: 12px; }
+    .nav-right-container { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+    /* Mobile hamburger */
+    .navbar-toggler { border: none; padding: 6px; background: none; cursor: pointer; }
+    .navbar-toggler span {
+      display: block; width: 22px; height: 2px;
+      background: var(--body-color); margin: 5px 0; transition: .3s;
+    }
+    /* Mobile nav drawer */
+    .navbar-mobile-menu {
+      display: none; flex-direction: column;
+      background: #fff; border-top: 1px solid #eee;
+      padding: .5rem 1rem 1rem;
+    }
+    .navbar-mobile-menu.open { display: flex; }
+    .navbar-mobile-menu .nav-link { color: var(--body-color); padding: .6rem .5rem; border-bottom: 1px solid #f0f0f0; font-size: .9rem; }
+    .navbar-mobile-menu .nav-link:last-child { border-bottom: none; }
 
     /* Book Now pill */
     .btn-primary {
@@ -245,16 +246,6 @@
 </head>
 <body>
 
-<!-- LOADING SCREEN -->
-<div class="page-out" id="pageLoader">
-  <div class="loading-inner">
-    <svg width="80" height="40" viewBox="0 0 80 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#fff" font-family="serif" font-size="10">DANIELA</text>
-    </svg>
-    <div class="loading-ring"></div>
-  </div>
-</div>
-
 <!-- ── NAVBAR ── -->
 <div id="navbar-container">
   <nav id="navbar-main" class="navbar-default">
@@ -265,17 +256,21 @@
         <a href="#" title="Hotel Daniela Bormio">
           <img src="https://www.hoteldanielabormio.it/images/core/logo-text.svg"
                alt="Hotel Daniela Bormio"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
-          <span style="display:none; font-size:1.1rem; font-weight:700; color:#222; letter-spacing:.05em;">Hotel Daniela Bormio</span>
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';" />
+          <span style="display:none;" class="logo-navbar-text">Hotel Daniela Bormio</span>
         </a>
       </div>
 
-      <!-- Mobile toggler -->
-      <button class="navbar-toggler d-xxl-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span></span><span></span><span></span>
-      </button>
+      <!-- Nav links (desktop) -->
+      <ul class="navbar-nav-main d-none d-lg-flex">
+        <li><a href="#" class="nav-link active">Home</a></li>
+        <li><a href="https://www.hoteldanielabormio.it/en/hotel" class="nav-link">Hotel</a></li>
+        <li><a href="https://www.hoteldanielabormio.it/en/rooms" class="nav-link">Rooms</a></li>
+        <li><a href="https://www.hoteldanielabormio.it/en/activities" class="nav-link">Activities</a></li>
+        <li><a href="https://www.hoteldanielabormio.it/en/contatti-2" class="nav-link">Contacts</a></li>
+      </ul>
 
-      <!-- Right side: lang + book now -->
+      <!-- Right: lang + book now + hamburger -->
       <div class="nav-right-container">
         <div class="mod-languages d-none d-sm-block">
           <ul class="mod-languages__list">
@@ -283,28 +278,25 @@
             <li class="lang-active"><a href="https://www.hoteldanielabormio.it/en/">EN</a></li>
           </ul>
         </div>
-        <div>
-          <p class="m-0 text-uppercase">
-            <a href="https://be.bookingexpert.it/book/home/index?layout=15998&lang=en&currency=EUR"
-               target="_blank" rel="noopener"
-               class="btn btn-primary btn-sm rounded-pill">
-              <span class="fas fa-calendar-alt me-2"></span>book now
-            </a>
-          </p>
-        </div>
+        <a href="https://be.bookingexpert.it/book/home/index?layout=15998&lang=en&currency=EUR"
+           target="_blank" rel="noopener"
+           class="btn btn-primary btn-sm rounded-pill text-uppercase">
+          <span class="fas fa-calendar-alt me-2"></span>book now
+        </a>
+        <!-- Hamburger (mobile only) -->
+        <button class="navbar-toggler d-lg-none" id="mobileToggler" type="button" aria-label="Toggle navigation">
+          <span></span><span></span><span></span>
+        </button>
       </div>
 
-      <!-- Nav links -->
-      <div class="collapse navbar-collapse justify-content-end d-none d-xxl-flex" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item"><a href="#" class="nav-link active">Home</a></li>
-          <li class="nav-item"><a href="https://www.hoteldanielabormio.it/en/hotel" class="nav-link">Hotel</a></li>
-          <li class="nav-item"><a href="https://www.hoteldanielabormio.it/en/rooms" class="nav-link">Rooms</a></li>
-          <li class="nav-item"><a href="https://www.hoteldanielabormio.it/en/activities" class="nav-link">Activities</a></li>
-          <li class="nav-item"><a href="https://www.hoteldanielabormio.it/en/contatti-2" class="nav-link">Contacts</a></li>
-        </ul>
-      </div>
-
+    </div>
+    <!-- Mobile nav drawer -->
+    <div class="navbar-mobile-menu" id="mobileMenu">
+      <a href="#" class="nav-link active">Home</a>
+      <a href="https://www.hoteldanielabormio.it/en/hotel" class="nav-link">Hotel</a>
+      <a href="https://www.hoteldanielabormio.it/en/rooms" class="nav-link">Rooms</a>
+      <a href="https://www.hoteldanielabormio.it/en/activities" class="nav-link">Activities</a>
+      <a href="https://www.hoteldanielabormio.it/en/contatti-2" class="nav-link">Contacts</a>
     </div>
   </nav>
 </div>
@@ -626,11 +618,9 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 <script>
-  // Loading screen
-  window.addEventListener('load', function () {
-    setTimeout(function () {
-      document.getElementById('pageLoader').classList.add('hide');
-    }, 600);
+  // Mobile hamburger
+  document.getElementById('mobileToggler').addEventListener('click', function () {
+    document.getElementById('mobileMenu').classList.toggle('open');
   });
 
   // Hero swiper
